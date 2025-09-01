@@ -51,9 +51,3 @@ A powerful web application that allows you to chat with AI models from multiple 
 - Modern web browser (Chrome, Firefox, Safari, Edge)
 - API keys from the providers you want to use
 
-### Setup
-1. **Download the Application**
-   ```bash
-   # Clone or download the HTML file
-   git clone <repository-url>
-   # Or simply download the `index.html` fileReadme
