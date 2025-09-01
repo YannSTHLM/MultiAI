@@ -1,1 +1,59 @@
-Readme
+# AI Chat - Multi-Provider Web Application
+
+A powerful web application that allows you to chat with AI models from multiple providers including Groq, OpenAI, x.ai, and Anthropic. Features rich text formatting, syntax highlighting, chat history, and bookmarking capabilities.
+
+![AI Chat Screenshot](https://via.placeholder.com/800x400?text=AI+Chat+Interface)
+
+## Features
+
+### 🚀 Multi-Provider Support
+- **Groq**: Access to Llama 3.1, Llama 3.3, Mixtral, and other models
+- **OpenAI**: GPT-4o, GPT-4 Turbo, GPT-3.5 Turbo, O1, O3, and O4 Mini
+- **x.ai**: Grok Beta and Grok Vision Beta models
+- **Anthropic**: Claude 3.5 Sonnet, Claude 3.5 Haiku, Claude 3 Opus, and Claude 3 Haiku
+
+### 💬 Chat Features
+- **Rich Text Formatting**: Support for Markdown formatting including:
+  - Headers (H1, H2, H3)
+  - Bold and italic text
+  - Inline code and code blocks
+  - Lists (ordered and unordered)
+  - Tables and blockquotes
+  - Links
+- **Syntax Highlighting**: Beautiful code highlighting with Prism.js for multiple languages
+- **Copy Code**: One-click code copying with visual feedback
+- **Typing Indicators**: Animated typing indicators for better UX
+
+### 📚 Chat Management
+- **Chat History**: All conversations are saved locally
+- **Bookmarks**: Mark important chats for quick access
+- **Search**: Quick access to recent and bookmarked chats
+- **Clear Chat**: Clear current chat while keeping the session
+- **Delete Chats**: Remove unwanted conversations
+
+### 🎨 User Interface
+- **Dark Mode**: Toggle between light and dark themes
+- **Responsive Design**: Works seamlessly on desktop and mobile
+- **Provider Icons**: Visual indicators for each AI provider
+- **Model Information**: Context window and token limits displayed
+- **Status Indicators**: API key status and current provider shown
+
+### 🔧 Technical Features
+- **Local Storage**: All data stored locally in your browser
+- **No Server Required**: Completely client-side application
+- **API Key Management**: Secure local storage of API keys
+- **Error Handling**: Comprehensive error messages and recovery
+- **Keyboard Shortcuts**: Enter to send, Shift+Enter for new line
+
+## Installation
+
+### Prerequisites
+- Modern web browser (Chrome, Firefox, Safari, Edge)
+- API keys from the providers you want to use
+
+### Setup
+1. **Download the Application**
+   ```bash
+   # Clone or download the HTML file
+   git clone <repository-url>
+   # Or simply download the `index.html` fileReadme
