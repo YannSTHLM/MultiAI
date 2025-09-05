@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Chat & Transcription - Groq, OpenAI, x.ai & Anthropic</title>
+    <title>AI Chat & Transcription - Groq, OpenAI, x.ai, Anthropic & OpenRouter</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
@@ -603,6 +603,9 @@
                         <button id="anthropic-tab" class="provider-tab px-6 py-3 font-medium text-gray-600 hover:text-indigo-700">
                             <i class="fas fa-feather mr-2"></i> Anthropic
                         </button>
+                        <button id="openrouter-tab" class="provider-tab px-6 py-3 font-medium text-gray-600 hover:text-indigo-700">
+                            <i class="fas fa-route mr-2"></i> OpenRouter
+                        </button>
                         <button id="transcription-tab" class="provider-tab px-6 py-3 font-medium text-gray-600 hover:text-indigo-700">
                             <i class="fas fa-microphone-alt mr-2"></i> Transcription
                         </button>
@@ -685,7 +688,7 @@
                         <div class="text-center py-10">
                             <i class="fas fa-robot text-5xl text-indigo-500 mb-4"></i>
                             <h2 class="text-2xl font-bold text-gray-800 mb-2">Welcome to AI Chat</h2>
-                            <p class="text-gray-600">Start a conversation with the latest AI models from Groq, OpenAI, x.ai, and Anthropic. Select a provider and model to begin!</p>
+                            <p class="text-gray-600">Start a conversation with the latest AI models from Groq, OpenAI, x.ai, Anthropic, and OpenRouter. Select a provider and model to begin!</p>
                         </div>
                     </div>
                 </div>
@@ -774,6 +777,11 @@
                     <input type="password" id="anthropic-api-key-input" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Enter your Anthropic API key">
                 </div>
                 
+                <div class="mb-4">
+                    <label for="openrouter-api-key-input" class="block text-sm font-medium text-gray-700 mb-1">OpenRouter API Key</label>
+                    <input type="password" id="openrouter-api-key-input" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Enter your OpenRouter API key">
+                </div>
+                
                 <p class="text-xs text-gray-500 mt-1">Your API keys are stored locally and never sent to any server.</p>
             </div>
             
@@ -799,6 +807,7 @@
         const openaiApiKeyInput = document.getElementById('openai-api-key-input');
         const xaiApiKeyInput = document.getElementById('xai-api-key-input');
         const anthropicApiKeyInput = document.getElementById('anthropic-api-key-input');
+        const openrouterApiKeyInput = document.getElementById('openrouter-api-key-input');
         const apiKeyStatus = document.getElementById('api-key-status');
         const currentProviderSpan = document.getElementById('current-provider');
         const modelSelect = document.getElementById('model-select');
@@ -811,6 +820,7 @@
         const openaiTab = document.getElementById('openai-tab');
         const xaiTab = document.getElementById('xai-tab');
         const anthropicTab = document.getElementById('anthropic-tab');
+        const openrouterTab = document.getElementById('openrouter-tab');
         const transcriptionTab = document.getElementById('transcription-tab');
         
         // Transcription elements
@@ -868,6 +878,17 @@
             { value: 'claude-3-opus-20240229', label: 'Claude 3 Opus', context: 200000, maxTokens: 4096, description: 'Most powerful model for complex tasks', badge: 'badge-updated', category: 'production' },
             { value: 'claude-3-haiku-20240307', label: 'Claude 3 Haiku', context: 200000, maxTokens: 4096, description: 'Fast and compact model', badge: 'badge-updated', category: 'production' }
         ];
+        const openrouterModels = [
+            { value: 'openai/gpt-4o', label: 'GPT-4o', context: 128000, maxTokens: 4096, description: 'Latest multimodal flagship model', badge: 'badge-new', category: 'production' },
+            { value: 'openai/gpt-4o-mini', label: 'GPT-4o Mini', context: 128000, maxTokens: 16384, description: 'Smaller, faster version of GPT-4o', badge: 'badge-new', category: 'production' },
+            { value: 'anthropic/claude-3.5-sonnet', label: 'Claude 3.5 Sonnet', context: 200000, maxTokens: 8192, description: 'Most balanced model for speed and intelligence', badge: 'badge-new', category: 'production' },
+            { value: 'anthropic/claude-3.5-haiku', label: 'Claude 3.5 Haiku', context: 200000, maxTokens: 8192, description: 'Fastest and most compact model', badge: 'badge-new', category: 'production' },
+            { value: 'google/gemini-pro-1.5', label: 'Gemini Pro 1.5', context: 1000000, maxTokens: 8192, description: 'Google Gemini Pro 1.5 with 1M context', badge: 'badge-new', category: 'production' },
+            { value: 'meta-llama/llama-3.1-70b', label: 'Llama 3.1 70B', context: 131072, maxTokens: 4096, description: 'Meta Llama 3.1 70B model', badge: 'badge-new', category: 'production' },
+            { value: 'meta-llama/llama-3.1-8b', label: 'Llama 3.1 8B', context: 131072, maxTokens: 4096, description: 'Meta Llama 3.1 8B model', badge: 'badge-new', category: 'production' },
+            { value: 'mistral/mistral-large', label: 'Mistral Large', context: 32768, maxTokens: 4096, description: 'Mistral AI Large model', badge: 'badge-new', category: 'production' },
+            { value: 'perplexity/llama-3.1-sonar-large-128k-online', label: 'Llama 3.1 Sonar Large 128K Online', context: 131072, maxTokens: 4096, description: 'Perplexity online search model', badge: 'badge-new', category: 'production' }
+        ];
         
         // State
         let chats = JSON.parse(localStorage.getItem('aiChats')) || [];
@@ -876,6 +897,7 @@
         let openaiApiKey = localStorage.getItem('openaiApiKey') || '';
         let xaiApiKey = localStorage.getItem('xaiApiKey') || '';
         let anthropicApiKey = localStorage.getItem('anthropicApiKey') || '';
+        let openrouterApiKey = localStorage.getItem('openrouterApiKey') || '';
         let currentProvider = localStorage.getItem('currentProvider') || 'groq';
         let isTyping = false;
         let uploadedFiles = [];
@@ -927,6 +949,7 @@
         openaiTab.addEventListener('click', () => switchTab('openai'));
         xaiTab.addEventListener('click', () => switchTab('xai'));
         anthropicTab.addEventListener('click', () => switchTab('anthropic'));
+        openrouterTab.addEventListener('click', () => switchTab('openrouter'));
         transcriptionTab.addEventListener('click', () => switchTab('transcription'));
         
         // Model selection
@@ -1008,6 +1031,11 @@
                 if (model) {
                     modelInfoText = `Context: ${model.context.toLocaleString()} tokens`;
                 }
+            } else if (currentProvider === 'openrouter') {
+                const model = openrouterModels.find(m => m.value === selectedModel);
+                if (model) {
+                    modelInfoText = `Context: ${model.context.toLocaleString()} tokens`;
+                }
             }
             
             modelInfo.textContent = modelInfoText;
@@ -1030,11 +1058,13 @@
             openaiApiKey = openaiApiKeyInput.value;
             xaiApiKey = xaiApiKeyInput.value;
             anthropicApiKey = anthropicApiKeyInput.value;
+            openrouterApiKey = openrouterApiKeyInput.value;
             
             localStorage.setItem('groqApiKey', groqApiKey);
             localStorage.setItem('openaiApiKey', openaiApiKey);
             localStorage.setItem('xaiApiKey', xaiApiKey);
             localStorage.setItem('anthropicApiKey', anthropicApiKey);
+            localStorage.setItem('openrouterApiKey', openrouterApiKey);
             
             updateApiKeyStatus();
             settingsModal.classList.add('hidden');
@@ -1052,6 +1082,8 @@
             } else if (currentProvider === 'xai' && xaiApiKey) {
                 hasApiKey = true;
             } else if (currentProvider === 'anthropic' && anthropicApiKey) {
+                hasApiKey = true;
+            } else if (currentProvider === 'openrouter' && openrouterApiKey) {
                 hasApiKey = true;
             }
             
@@ -1076,6 +1108,8 @@
                 xaiTab.classList.add('active');
             } else if (currentProvider === 'anthropic') {
                 anthropicTab.classList.add('active');
+            } else if (currentProvider === 'openrouter') {
+                openrouterTab.classList.add('active');
             }
         }
         
@@ -1091,6 +1125,8 @@
                 models = xaiModels;
             } else if (currentProvider === 'anthropic') {
                 models = anthropicModels;
+            } else if (currentProvider === 'openrouter') {
+                models = openrouterModels;
             }
             
             models.forEach(model => {
@@ -1158,7 +1194,7 @@
                     <div class="text-center py-10">
                         <i class="fas fa-robot text-5xl text-indigo-500 mb-4"></i>
                         <h2 class="text-2xl font-bold text-gray-800 mb-2">Welcome to AI Chat</h2>
-                        <p class="text-gray-600">Start a conversation with the latest AI models from Groq, OpenAI, x.ai, and Anthropic. Select a provider and model to begin!</p>
+                        <p class="text-gray-600">Start a conversation with the latest AI models from Groq, OpenAI, x.ai, Anthropic, and OpenRouter. Select a provider and model to begin!</p>
                     </div>
                 `;
                 return;
@@ -1184,13 +1220,90 @@
             chatMessages.scrollTop = chatMessages.scrollHeight;
         }
         
+        // Table formatting functions
+        function convertMarkdownTables(markdown) {
+            const lines = markdown.split('\n');
+            let result = [];
+            let i = 0;
+            
+            while (i < lines.length) {
+                // Check if current line is a table header
+                if (lines[i].startsWith('|') && lines[i].endsWith('|') && lines[i].split('|').length >= 3) {
+                    // Check next line is a separator
+                    if (i + 1 < lines.length && isTableSeparator(lines[i+1])) {
+                        // We have a table, collect all consecutive table rows
+                        let tableLines = [lines[i]]; // header
+                        i += 2; // skip header and separator
+                        while (i < lines.length && isTableRow(lines[i])) {
+                            tableLines.push(lines[i]);
+                            i++;
+                        }
+                        // Convert the tableLines to HTML table
+                        result.push(convertTableLinesToHTML(tableLines));
+                        continue;
+                    }
+                }
+                // Not a table, just add the line
+                result.push(lines[i]);
+                i++;
+            }
+            
+            return result.join('\n');
+        }
+        
+        function isTableSeparator(line) {
+            // A separator line consists of |, -, :, and spaces
+            // Example: |----------|----------|
+            return line.startsWith('|') && line.endsWith('|') && 
+                   /^[\|\s\-\:]+$/.test(line.replace(/\s/g, ''));
+        }
+        
+        function isTableRow(line) {
+            return line.startsWith('|') && line.endsWith('|') && line.split('|').length >= 3;
+        }
+        
+        function convertTableLinesToHTML(lines) {
+            if (lines.length === 0) return '';
+            
+            // First line is header
+            const headerCells = lines[0].split('|').slice(1, -1).map(cell => cell.trim());
+            const rows = lines.slice(1).map(line => 
+                line.split('|').slice(1, -1).map(cell => cell.trim())
+            );
+            
+            let html = '<table>';
+            // Header
+            html += '<thead><tr>';
+            headerCells.forEach(cell => {
+                html += `<th>${escapeHtml(cell)}</th>`;
+            });
+            html += '</tr></thead>';
+            
+            // Body
+            html += '<tbody>';
+            rows.forEach(row => {
+                html += '<tr>';
+                row.forEach(cell => {
+                    html += `<td>${escapeHtml(cell)}</td>`;
+                });
+                html += '</tr>';
+            });
+            html += '</tbody></table>';
+            
+            return html;
+        }
+        
         function formatMessageContent(content) {
-            // Simple markdown to HTML conversion
+            // First, process code blocks
             content = content.replace(/```(\w+)?\n([\s\S]*?)```/g, (match, language, code) => {
                 const lang = language || 'text';
                 return `<pre><code class="language-${lang}">${escapeHtml(code.trim())}</code></pre>`;
             });
             
+            // Then, process tables
+            content = convertMarkdownTables(content);
+            
+            // Then, process other markdown
             content = content.replace(/`([^`]+)`/g, '<code>$1</code>');
             content = content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
             content = content.replace(/\*(.*?)\*/g, '<em>$1</em>');
@@ -1498,6 +1611,22 @@
                     max_tokens: 4096,
                     messages: anthropicMessages
                 };
+            } else if (currentProvider === 'openrouter') {
+                apiKey = openrouterApiKey;
+                endpoint = 'https://openrouter.ai/api/v1/chat/completions';
+                headers = {
+                    'Authorization': `Bearer ${apiKey}`,
+                    'Content-Type': 'application/json',
+                    'HTTP-Referer': window.location.href,
+                    'X-Title': 'Multi-LLM Front-End'
+                };
+                
+                body = {
+                    model: modelSelect.value,
+                    messages: chat.messages.map(m => ({ role: m.role, content: m.content })),
+                    temperature: 0.7,
+                    max_tokens: 4096
+                };
             }
             
             if (!apiKey) {
@@ -1529,7 +1658,7 @@
                     // Check for web search results
                     if (webSearchToggle.checked && data.choices[0].message.tool_calls) {
                         const toolCall = data.choices[0].message.tool_calls[0];
-                        if (toolCall.function.name === 'web_search') {
+                        if (toolCall.function.name === 'web_search") {
                             const args = JSON.parse(toolCall.function.arguments);
                             webSearchResults = await performWebSearch(args.query);
                         }
