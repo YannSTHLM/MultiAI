@@ -103,6 +103,10 @@
             background-color: #8b5cf6;
             color: white;
         }
+        .badge-popular {
+            background-color: #ec4899;
+            color: white;
+        }
         .message-content {
             line-height: 1.6;
         }
@@ -535,6 +539,37 @@
         .btn:active {
             transform: translateY(1px);
         }
+        /* Model category styling */
+        .model-category {
+            font-size: 0.75rem;
+            color: #6b7280;
+            margin-top: 0.25rem;
+        }
+        .dark-mode .model-category {
+            color: #9ca3af;
+        }
+        .model-description {
+            font-size: 0.875rem;
+            color: #4b5563;
+            margin-top: 0.25rem;
+        }
+        .dark-mode .model-description {
+            color: #d1d5db;
+        }
+        .model-details {
+            display: flex;
+            flex-direction: column;
+            margin-top: 0.5rem;
+        }
+        .model-stats {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.75rem;
+            color: #6b7280;
+        }
+        .dark-mode .model-stats {
+            color: #9ca3af;
+        }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800">
@@ -879,15 +914,69 @@
             { value: 'claude-3-haiku-20240307', label: 'Claude 3 Haiku', context: 200000, maxTokens: 4096, description: 'Fast and compact model', badge: 'badge-updated', category: 'production' }
         ];
         const openrouterModels = [
-            { value: 'openai/gpt-4o', label: 'GPT-4o', context: 128000, maxTokens: 4096, description: 'Latest multimodal flagship model', badge: 'badge-new', category: 'production' },
-            { value: 'openai/gpt-4o-mini', label: 'GPT-4o Mini', context: 128000, maxTokens: 16384, description: 'Smaller, faster version of GPT-4o', badge: 'badge-new', category: 'production' },
-            { value: 'anthropic/claude-3.5-sonnet', label: 'Claude 3.5 Sonnet', context: 200000, maxTokens: 8192, description: 'Most balanced model for speed and intelligence', badge: 'badge-new', category: 'production' },
-            { value: 'anthropic/claude-3.5-haiku', label: 'Claude 3.5 Haiku', context: 200000, maxTokens: 8192, description: 'Fastest and most compact model', badge: 'badge-new', category: 'production' },
-            { value: 'google/gemini-pro-1.5', label: 'Gemini Pro 1.5', context: 1000000, maxTokens: 8192, description: 'Google Gemini Pro 1.5 with 1M context', badge: 'badge-new', category: 'production' },
-            { value: 'meta-llama/llama-3.1-70b', label: 'Llama 3.1 70B', context: 131072, maxTokens: 4096, description: 'Meta Llama 3.1 70B model', badge: 'badge-new', category: 'production' },
-            { value: 'meta-llama/llama-3.1-8b', label: 'Llama 3.1 8B', context: 131072, maxTokens: 4096, description: 'Meta Llama 3.1 8B model', badge: 'badge-new', category: 'production' },
-            { value: 'mistral/mistral-large', label: 'Mistral Large', context: 32768, maxTokens: 4096, description: 'Mistral AI Large model', badge: 'badge-new', category: 'production' },
-            { value: 'perplexity/llama-3.1-sonar-large-128k-online', label: 'Llama 3.1 Sonar Large 128K Online', context: 131072, maxTokens: 4096, description: 'Perplexity online search model', badge: 'badge-new', category: 'production' }
+            // OpenAI Models
+            { value: 'openai/gpt-4o', label: 'GPT-4o', context: 128000, maxTokens: 16384, description: 'Latest multimodal flagship model with vision capabilities', badge: 'badge-popular', category: 'openai' },
+            { value: 'openai/gpt-4o-mini', label: 'GPT-4o Mini', context: 128000, maxTokens: 16384, description: 'Smaller, faster version of GPT-4o with great value', badge: 'badge-popular', category: 'openai' },
+            { value: 'openai/gpt-4-turbo', label: 'GPT-4 Turbo', context: 128000, maxTokens: 4096, description: 'High-performance model with knowledge up to April 2024', badge: 'badge-production', category: 'openai' },
+            { value: 'openai/gpt-3.5-turbo', label: 'GPT-3.5 Turbo', context: 16385, maxTokens: 4096, description: 'Fast and capable model for most tasks', badge: 'badge-production', category: 'openai' },
+            { value: 'openai/o1-preview', label: 'O1 Preview', context: 128000, maxTokens: 32768, description: 'Advanced reasoning model with chain-of-thought', badge: 'badge-new', category: 'openai' },
+            { value: 'openai/o1-mini', label: 'O1 Mini', context: 128000, maxTokens: 65536, description: 'Compact reasoning model with fast response times', badge: 'badge-new', category: 'openai' },
+            
+            // Anthropic Models
+            { value: 'anthropic/claude-3-5-sonnet', label: 'Claude 3.5 Sonnet', context: 200000, maxTokens: 8192, description: 'Most balanced model for speed and intelligence', badge: 'badge-popular', category: 'anthropic' },
+            { value: 'anthropic/claude-3-5-haiku', label: 'Claude 3.5 Haiku', context: 200000, maxTokens: 8192, description: 'Fastest and most compact model', badge: 'badge-popular', category: 'anthropic' },
+            { value: 'anthropic/claude-3-opus', label: 'Claude 3 Opus', context: 200000, maxTokens: 4096, description: 'Most powerful model for complex tasks', badge: 'badge-production', category: 'anthropic' },
+            { value: 'anthropic/claude-3-haiku', label: 'Claude 3 Haiku', context: 200000, maxTokens: 4096, description: 'Fast and compact model', badge: 'badge-production', category: 'anthropic' },
+            
+            // Google Models
+            { value: 'google/gemini-pro-1.5', label: 'Gemini Pro 1.5', context: 2097152, maxTokens: 8192, description: 'Google Gemini Pro 1.5 with 2M context window', badge: 'badge-new', category: 'google' },
+            { value: 'google/gemini-flash-1.5', label: 'Gemini Flash 1.5', context: 1048576, maxTokens: 8192, description: 'Fast and lightweight Gemini model', badge: 'badge-new', category: 'google' },
+            { value: 'google/gemini-1.5-pro-latest', label: 'Gemini 1.5 Pro Latest', context: 2097152, maxTokens: 8192, description: 'Latest version of Gemini 1.5 Pro', badge: 'badge-new', category: 'google' },
+            
+            // Meta Models
+            { value: 'meta-llama/llama-3.1-405b', label: 'Llama 3.1 405B', context: 131072, maxTokens: 4096, description: 'Meta Llama 3.1 405B - largest open-source model', badge: 'badge-new', category: 'meta' },
+            { value: 'meta-llama/llama-3.1-70b', label: 'Llama 3.1 70B', context: 131072, maxTokens: 4096, description: 'Meta Llama 3.1 70B model', badge: 'badge-new', category: 'meta' },
+            { value: 'meta-llama/llama-3.1-8b', label: 'Llama 3.1 8B', context: 131072, maxTokens: 4096, description: 'Meta Llama 3.1 8B model', badge: 'badge-new', category: 'meta' },
+            { value: 'meta-llama/llama-3-70b', label: 'Llama 3 70B', context: 8192, maxTokens: 4096, description: 'Meta Llama 3 70B model', badge: 'badge-production', category: 'meta' },
+            { value: 'meta-llama/llama-3-8b', label: 'Llama 3 8B', context: 8192, maxTokens: 4096, description: 'Meta Llama 3 8B model', badge: 'badge-production', category: 'meta' },
+            
+            // Mistral Models
+            { value: 'mistral/mistral-large', label: 'Mistral Large', context: 32768, maxTokens: 4096, description: 'Mistral AI Large model with strong reasoning', badge: 'badge-production', category: 'mistral' },
+            { value: 'mistral/mistral-medium', label: 'Mistral Medium', context: 32768, maxTokens: 4096, description: 'Balanced performance model from Mistral', badge: 'badge-production', category: 'mistral' },
+            { value: 'mistral/mistral-small', label: 'Mistral Small', context: 32768, maxTokens: 4096, description: 'Fast and efficient model from Mistral', badge: 'badge-production', category: 'mistral' },
+            { value: 'mistral/mixtral-8x7b', label: 'Mixtral 8x7B', context: 32768, maxTokens: 4096, description: 'Mixture of experts model with strong performance', badge: 'badge-production', category: 'mistral' },
+            { value: 'mistral/mixtral-8x22b', label: 'Mixtral 8x22B', context: 65536, maxTokens: 4096, description: 'Large mixture of experts model', badge: 'badge-new', category: 'mistral' },
+            
+            // Perplexity Models
+            { value: 'perplexity/llama-3.1-sonar-large-128k-online', label: 'Sonar Large 128K Online', context: 131072, maxTokens: 4096, description: 'Perplexity online search model with web access', badge: 'badge-popular', category: 'perplexity' },
+            { value: 'perplexity/llama-3.1-sonar-small-128k-online', label: 'Sonar Small 128K Online', context: 131072, maxTokens: 4096, description: 'Fast online search model with web access', badge: 'badge-popular', category: 'perplexity' },
+            { value: 'perplexity/llama-3.1-sonar-huge-128k-online', label: 'Sonar Huge 128K Online', context: 131072, maxTokens: 4096, description: 'Most powerful online search model', badge: 'badge-new', category: 'perplexity' },
+            
+            // Cohere Models
+            { value: 'cohere/command-r-plus', label: 'Command R+', context: 128000, maxTokens: 4096, description: 'Cohere Command R+ with RAG capabilities', badge: 'badge-new', category: 'cohere' },
+            { value: 'cohere/command-r', label: 'Command R', context: 128000, maxTokens: 4096, description: 'Cohere Command R optimized for RAG', badge: 'badge-new', category: 'cohere' },
+            
+            // Qwen Models
+            { value: 'qwen/qwen-2.5-72b', label: 'Qwen 2.5 72B', context: 131072, maxTokens: 32768, description: 'Alibaba Qwen 2.5 72B model', badge: 'badge-new', category: 'qwen' },
+            { value: 'qwen/qwen-2.5-32b', label: 'Qwen 2.5 32B', context: 131072, maxTokens: 32768, description: 'Alibaba Qwen 2.5 32B model', badge: 'badge-new', category: 'qwen' },
+            { value: 'qwen/qwen-2.5-7b', label: 'Qwen 2.5 7B', context: 131072, maxTokens: 32768, description: 'Alibaba Qwen 2.5 7B model', badge: 'badge-new', category: 'qwen' },
+            
+            // DeepSeek Models
+            { value: 'deepseek/deepseek-r1', label: 'DeepSeek R1', context: 65536, maxTokens: 4096, description: 'DeepSeek R1 with strong reasoning capabilities', badge: 'badge-new', category: 'deepseek' },
+            { value: 'deepseek/deepseek-coder', label: 'DeepSeek Coder', context: 16384, maxTokens: 4096, description: 'DeepSeek Coder optimized for programming', badge: 'badge-new', category: 'deepseek' },
+            
+            // Yi Models
+            { value: '01-ai/yi-large', label: 'Yi Large', context: 32768, maxTokens: 4096, description: '01.AI Yi Large model', badge: 'badge-new', category: 'yi' },
+            { value: '01-ai/yi-medium', label: 'Yi Medium', context: 16384, maxTokens: 4096, description: '01.AI Yi Medium model', badge: 'badge-new', category: 'yi' },
+            
+            // Nous Research Models
+            { value: 'nousresearch/hermes-2-pro', label: 'Hermes 2 Pro', context: 32768, maxTokens: 4096, description: 'Nous Research Hermes 2 Pro model', badge: 'badge-new', category: 'nous' },
+            { value: 'nousresearch/hermes-2-theta', label: 'Hermes 2 Theta', context: 32768, maxTokens: 4096, description: 'Nous Research Hermes 2 Theta model', badge: 'badge-new', category: 'nous' },
+            
+            // Other Notable Models
+            { value: 'sao10k/l3-70b-euryale-v2.1', label: 'L3 70B Euryale v2.1', context: 8192, maxTokens: 4096, description: 'Uncensored Llama 3 variant', badge: 'badge-preview', category: 'other' },
+            { value: 'recursal/rwkv-5-world', label: 'RWKV-5 World', context: 1000000, maxTokens: 4096, description: 'RWKV-5 with 1M context window', badge: 'badge-new', category: 'other' },
+            { value: 'nexusflow/starling-lm-7b-beta', label: 'Starling LM 7B Beta', context: 32768, maxTokens: 4096, description: 'NexusFlow Starling LM 7B model', badge: 'badge-new', category: 'other' }
         ];
         
         // State
