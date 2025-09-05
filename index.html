@@ -1184,13 +1184,90 @@
             chatMessages.scrollTop = chatMessages.scrollHeight;
         }
         
+        // Table formatting functions
+        function convertMarkdownTables(markdown) {
+            const lines = markdown.split('\n');
+            let result = [];
+            let i = 0;
+            
+            while (i < lines.length) {
+                // Check if current line is a table header
+                if (lines[i].startsWith('|') && lines[i].endsWith('|') && lines[i].split('|').length >= 3) {
+                    // Check next line is a separator
+                    if (i + 1 < lines.length && isTableSeparator(lines[i+1])) {
+                        // We have a table, collect all consecutive table rows
+                        let tableLines = [lines[i]]; // header
+                        i += 2; // skip header and separator
+                        while (i < lines.length && isTableRow(lines[i])) {
+                            tableLines.push(lines[i]);
+                            i++;
+                        }
+                        // Convert the tableLines to HTML table
+                        result.push(convertTableLinesToHTML(tableLines));
+                        continue;
+                    }
+                }
+                // Not a table, just add the line
+                result.push(lines[i]);
+                i++;
+            }
+            
+            return result.join('\n');
+        }
+        
+        function isTableSeparator(line) {
+            // A separator line consists of |, -, :, and spaces
+            // Example: |----------|----------|
+            return line.startsWith('|') && line.endsWith('|') && 
+                   /^[\|\s\-\:]+$/.test(line.replace(/\s/g, ''));
+        }
+        
+        function isTableRow(line) {
+            return line.startsWith('|') && line.endsWith('|') && line.split('|').length >= 3;
+        }
+        
+        function convertTableLinesToHTML(lines) {
+            if (lines.length === 0) return '';
+            
+            // First line is header
+            const headerCells = lines[0].split('|').slice(1, -1).map(cell => cell.trim());
+            const rows = lines.slice(1).map(line => 
+                line.split('|').slice(1, -1).map(cell => cell.trim())
+            );
+            
+            let html = '<table>';
+            // Header
+            html += '<thead><tr>';
+            headerCells.forEach(cell => {
+                html += `<th>${escapeHtml(cell)}</th>`;
+            });
+            html += '</tr></thead>';
+            
+            // Body
+            html += '<tbody>';
+            rows.forEach(row => {
+                html += '<tr>';
+                row.forEach(cell => {
+                    html += `<td>${escapeHtml(cell)}</td>`;
+                });
+                html += '</tr>';
+            });
+            html += '</tbody></table>';
+            
+            return html;
+        }
+        
         function formatMessageContent(content) {
-            // Simple markdown to HTML conversion
+            // First, process code blocks
             content = content.replace(/```(\w+)?\n([\s\S]*?)```/g, (match, language, code) => {
                 const lang = language || 'text';
                 return `<pre><code class="language-${lang}">${escapeHtml(code.trim())}</code></pre>`;
             });
             
+            // Then, process tables
+            content = convertMarkdownTables(content);
+            
+            // Then, process other markdown
             content = content.replace(/`([^`]+)`/g, '<code>$1</code>');
             content = content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
             content = content.replace(/\*(.*?)\*/g, '<em>$1</em>');
