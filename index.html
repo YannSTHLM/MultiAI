@@ -903,6 +903,14 @@
         let uploadedFiles = [];
         let transcriptionResults = [];
         
+        // Expose functions to global scope for onclick handlers
+        window.loadChat = loadChat;
+        window.toggleBookmark = toggleBookmark;
+        window.deleteChat = deleteChat;
+        window.removeFile = removeFile;
+        window.downloadTranscription = downloadTranscription;
+        window.addToChat = addToChat;
+        
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
             // Set API key status
@@ -934,7 +942,7 @@
             initializeTranscription();
         });
         
-        // Event Listeners - FIXED: Changed provider tabs to call switchTab instead of switchProvider
+        // Event Listeners
         sendBtn.addEventListener('click', sendMessage);
         messageInput.addEventListener('keydown', handleKeyDown);
         newChatBtn.addEventListener('click', createNewChat);
@@ -944,7 +952,7 @@
         saveSettingsBtn.addEventListener('click', saveSettings);
         darkModeToggle.addEventListener('click', toggleDarkMode);
         
-        // Provider tabs - FIXED: Changed from switchProvider to switchTab
+        // Provider tabs
         groqTab.addEventListener('click', () => switchTab('groq'));
         openaiTab.addEventListener('click', () => switchTab('openai'));
         xaiTab.addEventListener('click', () => switchTab('xai'));
@@ -1389,19 +1397,35 @@
             const date = new Date(chat.timestamp).toLocaleDateString();
             
             item.innerHTML = `
-                <div class="flex items-center truncate" onclick="loadChat('${chat.id}')">
+                <div class="flex items-center truncate" data-chat-id="${chat.id}">
                     <i class="fas fa-${isBookmarked ? 'bookmark bookmark-active' : 'comment'} mr-2"></i>
                     <span class="truncate">${title}</span>
                 </div>
                 <div class="flex items-center space-x-1">
-                    <button class="text-gray-500 hover:text-indigo-600 p-1" onclick="toggleBookmark('${chat.id}')">
+                    <button class="text-gray-500 hover:text-indigo-600 p-1 bookmark-btn" data-chat-id="${chat.id}">
                         <i class="fas fa-${chat.bookmarked ? 'bookmark bookmark-active' : 'bookmark'}"></i>
                     </button>
-                    <button class="text-gray-500 hover:text-red-600 p-1" onclick="deleteChat('${chat.id}')">
+                    <button class="text-gray-500 hover:text-red-600 p-1 delete-btn" data-chat-id="${chat.id}">
                         <i class="fas fa-trash-alt"></i>
                     </button>
                 </div>
             `;
+            
+            // Add event listeners
+            const chatInfo = item.querySelector('[data-chat-id]');
+            chatInfo.addEventListener('click', () => loadChat(chat.id));
+            
+            const bookmarkBtn = item.querySelector('.bookmark-btn');
+            bookmarkBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                toggleBookmark(chat.id);
+            });
+            
+            const deleteBtn = item.querySelector('.delete-btn');
+            deleteBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                deleteChat(chat.id);
+            });
             
             return item;
         }
@@ -1658,7 +1682,7 @@
                     // Check for web search results
                     if (webSearchToggle.checked && data.choices[0].message.tool_calls) {
                         const toolCall = data.choices[0].message.tool_calls[0];
-                        if (toolCall.function.name === 'web_search") {
+                        if (toolCall.function.name === 'web_search') {
                             const args = JSON.parse(toolCall.function.arguments);
                             webSearchResults = await performWebSearch(args.query);
                         }
@@ -1802,11 +1826,15 @@
                         </div>
                     </div>
                     <div class="file-actions">
-                        <button class="text-red-500 hover:text-red-700" onclick="removeFile(${index})">
+                        <button class="text-red-500 hover:text-red-700 remove-file-btn" data-index="${index}">
                             <i class="fas fa-times"></i>
                         </button>
                     </div>
                 `;
+                
+                // Add event listener for remove button
+                const removeBtn = fileItem.querySelector('.remove-file-btn');
+                removeBtn.addEventListener('click', () => removeFile(index));
                 
                 fileList.appendChild(fileItem);
             });
@@ -1939,10 +1967,10 @@
                                     ${file.name}
                                 </div>
                                 <div class="transcription-actions">
-                                    <button class="text-sm text-gray-500 hover:text-gray-700" onclick="downloadTranscription(${i})">
+                                    <button class="text-sm text-gray-500 hover:text-gray-700 download-btn" data-index="${i}">
                                         <i class="fas fa-download"></i>
                                     </button>
-                                    ${addToChatCheckbox.checked ? `<button class="text-sm text-indigo-500 hover:text-indigo-700" onclick="addToChat(${i})">
+                                    ${addToChatCheckbox.checked ? `<button class="text-sm text-indigo-500 hover:text-indigo-700 add-to-chat-btn" data-index="${i}">
                                         <i class="fas fa-comment-medical"></i>
                                     </button>` : ''}
                                 </div>
@@ -1952,6 +1980,15 @@
                                 Language: ${data.language} | Duration: ${formatDuration(data.duration)}
                             </div>
                         `;
+                        
+                        // Add event listeners for buttons
+                        const downloadBtn = progressEl.querySelector('.download-btn');
+                        downloadBtn.addEventListener('click', () => downloadTranscription(i));
+                        
+                        if (addToChatCheckbox.checked) {
+                            const addToChatBtn = progressEl.querySelector('.add-to-chat-btn');
+                            addToChatBtn.addEventListener('click', () => addToChat(i));
+                        }
                     }, 500);
                     
                 } catch (error) {
